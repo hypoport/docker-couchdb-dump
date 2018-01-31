@@ -25,7 +25,7 @@ def dump(host, port, database, username, password, page_size=5000):
         'include_docs': True,
         'limit': page_size + 1,
     })
-    sys.stdout.write('{"docs":[')
+    sys.stdout.write('{"docs":[\n')
     previous_doc = None
     while True:
         if response.status_code == 200:
@@ -40,7 +40,7 @@ def dump(host, port, database, username, password, page_size=5000):
                 else:
                     next_doc = None
                 if previous_doc:
-                    sys.stdout.write(',')
+                    sys.stdout.write(',\n')
                 del doc['_rev']
                 sys.stdout.write(json.dumps(doc, separators=(',', ':')))
                 previous_doc = doc
