@@ -1,5 +1,5 @@
 # docker-couchdb-dump
-Small Docker image with Alpine, NodeJS and the [couchdb-dump](https://github.com/raffi-minassian/couchdb-dump) package installed.
+Docker image containing a simple script to dump CouchDB databases of any size as JSON.
 
 ## Usage
 ```bash

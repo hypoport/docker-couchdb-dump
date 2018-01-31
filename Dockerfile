@@ -1,2 +1,6 @@
-FROM node:9-alpine
-RUN npm install -g couchdb-dump@2.2.1
+FROM python:3.6.4-alpine3.7
+WORKDIR /couchdb_dump/lib
+COPY . .
+RUN pip install -r requirements.txt && \
+  chmod +x couchdb_dump.py && \
+  ln -s /couchdb_dump/lib/couchdb_dump.py /usr/local/bin/cdbdump
