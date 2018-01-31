@@ -42,7 +42,7 @@ def dump(host, port, database, username, password, page_size=5000):
                 if previous_doc:
                     sys.stdout.write(',\n')
                 del doc['_rev']
-                sys.stdout.write(json.dumps(doc, separators=(',', ':')))
+                sys.stdout.write(json.dumps(doc, separators=(',', ':'), ensure_ascii=False))
                 previous_doc = doc
             if next_doc:
                 response = session.get(uri, auth=auth, params={
