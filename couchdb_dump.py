@@ -12,6 +12,7 @@ def parse_args():
     parser.add_argument('-P', dest='port', type=int, default=5984, help='database port')
     parser.add_argument('-u', dest='username', help='database username')
     parser.add_argument('-p', dest='password', help='database password')
+    parser.add_argument('-b', dest='bulk_size', type=int, default=1000)
     parser.add_argument('database', help='the database to dump')
     return parser.parse_args()
 
@@ -60,4 +61,4 @@ def dump(host, port, database, username, password, page_size=5000):
 
 
 ARGS = parse_args()
-dump(ARGS.host, ARGS.port, ARGS.database, ARGS.username, ARGS.password)
+dump(ARGS.host, ARGS.port, ARGS.database, ARGS.username, ARGS.password, page_size=ARGS.bulk_size)
