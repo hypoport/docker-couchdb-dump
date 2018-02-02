@@ -14,6 +14,7 @@ def parse_args():
     parser.add_argument('-P', dest='port', type=int, default=5984)
     parser.add_argument('-u', dest='username')
     parser.add_argument('-p', dest='password')
+    parser.add_argument('-b', dest='bulk_size', type=int, default=1000)
     parser.add_argument('target_database', help='database to import data to')
     return parser.parse_args()
 
@@ -24,7 +25,7 @@ def default(obj):
     raise TypeError("Object of type '%s' is not JSON serializable" % type(obj).__name__)
 
 
-def load(args, input_file, bulk_size=1):
+def load(args, input_file, bulk_size=1000):
     session = requests.session()
     bulk = []
     for doc in ijson.items(input_file, 'docs.item'):
@@ -45,14 +46,21 @@ def bulk_insert(args, session, docs):
         'Content-Type': 'application/json',
         'X-Couch-Full-Commit': 'true'
     })
-    if response.status_code != 201:
-        sys.stderr.write('Failed to import documents into {} ({:d})\n'.format(
-            args.target_database, response.status_code))
+    if response.status_code == 201:
+        results = response.json()
+        for result in results:
+            if result['error']:
+                message = 'Failed to import document {}: {}. Reason: {}\n'.format(
+                    result['id'], result['error'], result['reason'])
+                sys.stderr.write(message)
+                sys.exit(1)
+    else:
+        sys.stderr.write('Failed to import documents into {}\n'.format(args.target_database))
         sys.exit(1)
 
 
 def main():
     args = parse_args()
-    load(args, sys.stdin, bulk_size=25000)
+    load(args, sys.stdin, bulk_size=args.bulk_size)
 
 main()
